@@ -61,9 +61,7 @@ if ($this_data == null) {
     }
     //echo json_encode($parent->attributes, JSON_PRETTY_PRINT) . "\r\n";
 }
-
 echo "\r\nCompleted update at " . $times[0];
-$context->return_data();
 
 function getProperty($obj, $property) {
   foreach( $property as $p ) {
