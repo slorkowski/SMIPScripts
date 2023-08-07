@@ -8,8 +8,14 @@ use \TiqUtilities\Model\Attribute;
 require_once 'thinkiq_context.php';
 $context = new Context();
 $apikey = $context->custom_inputs->apikey;
+if (!isset($apikey) || $apikey == "") {
+    $msg = "No Plaato API key set, import script cannot run!";
+    error_log($msg);
+    print($msg);
+    throw new Exception($msg);
+}
 
-// Make or find the target attributes to be updated
+// Find the target attributes to be updated
 $parent = new Node($context->std_inputs->node_id);
 $this_plaato = strtolower($parent->display_name);
 echo "Updating: " . $this_plaato . "\r\n";

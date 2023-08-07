@@ -54,7 +54,7 @@ except:
                 password = credParts[2]
     except:
         print ("No Growatt credentials set in custom inputs. Quitting")
-        quit()        
+        quit() 
 print ("Found credentials for " + parent_node.display_name)
 
 # Make times
