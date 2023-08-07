@@ -94,3 +94,4 @@ function getPlaatoData($apikey) {
     curl_close($ch);
     return $response;
 }
+?>
