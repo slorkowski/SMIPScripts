@@ -1,0 +1,14 @@
+<?php
+
+require_once 'thinkiq_context.php';
+$context = new Context();
+
+use TiqUtilities\Model\Attribute;
+
+$newAttr = new Attribute(184076);                            // get attribute by ID
+// var_dump($newAttr); die;                                  // to make sure we have the correct attribute
+
+$newAttr->insertTimeseries(['1'], ['2025-01-01 11:00']);            // insert timeseries data: values first, timestamps second
+
+$vs = $newAttr->getTimeseries('2025-01-01', '2025-01-02');    // retrieve value stream
+// var_dump($vs); die;                                        // this should include the added vst

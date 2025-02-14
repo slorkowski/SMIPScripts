@@ -1,0 +1,38 @@
+<?php
+// Define the webhook URL
+$webhookUrl = "https://webhook.site/2b7b710a-aa99-4cef-9b5a-a33824534c7f";
+
+// Prepare the data to be sent
+$data = [
+    "name" => "John Doe",
+    "email" => "john.doe@example.com"
+];
+
+// Convert data to JSON format
+$jsonData = json_encode($data);
+
+// Initialize cURL session
+$ch = curl_init($webhookUrl);
+
+// Set cURL options
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'Content-Length: ' . strlen($jsonData)
+]);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+
+// Execute cURL request
+$response = curl_exec($ch);
+
+// Check for errors
+if (curl_errno($ch)) {
+    echo 'Error:' . curl_error($ch);
+} else {
+    echo 'Response:' . $response;
+}
+
+// Close cURL session
+curl_close($ch);
+?>

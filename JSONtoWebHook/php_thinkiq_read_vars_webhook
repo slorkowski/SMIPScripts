@@ -1,0 +1,74 @@
+<?php
+// write JSON data into attribute so I can parse it or send externally
+use TiqUtilities\Model\Node;
+use TiqUtilities\Model\Equipment;
+use TiqUtilities\Model\Attribute;
+use TiqUtilities\Database\PgSQL;
+
+require_once 'thinkiq_context.php';
+$context = new Context();
+$logger = $context->logger; // shorthand to keep this script clearer 
+$db = new PgSQL(new TiqConfig());
+
+// retrieve the station and its attributes from TIQ Model where this script lives
+$host_id = $context->std_inputs->node_id;
+$station = new Equipment($host_id);
+$station->getAttributes();
+$station->getParent();
+$station->parent->getAttributes();
+//print_r($station);
+
+// URL of the raw JSON file on GitHub until I have the real endpoint
+$jsonString = 'https://raw.githubusercontent.com/slorkowski/JSON_-Files/main/MyExample.json';
+$response = file_get_contents($jsonString);
+echo($response);
+//Decode JSON to PHP variable data array
+$dataArray = json_decode($response, true);
+//print_r($response);
+//Assign key value pairs 
+$robotName = $dataArray['robotName'];
+$TaskStatus = $dataArray['maintenanceItems'][0]['statusAnalytic'];
+$MIDateTime = $dataArray['maintenanceItems'][0]['dateTime'];
+$MIDescription = $dataArray['maintenanceItems'][0]['description'];
+//print_r($TaskStatus);
+//TO DO - Add 2 or more Maintenance Item Arrays
+
+//Write to SMIP Attributes
+//$station->attributes['json_data']->insertTimeSeries([json_encode($dataArray)], ['2025-01-30 01:00']);
+$station->attributes['statusanalytic']->insertTimeSeries([$TaskStatus], [$MIDateTime]);
+//$station->attributes['JSON_Data']->insertTimeSeries([json_encode($rawdata)], ['2025-01-30 11:00']);
+
+// Write to webhook URL
+$webhookUrl = "https://webhook.site/2b7b710a-aa99-4cef-9b5a-a33824534c7f";
+// Prepare the data to be sent
+$data = [
+    "RobotName" => $robotName,
+    "MI_StatusAnalytics" => $TaskStatus,
+    "MI_Description" => $MIDescription,
+    "MI_DateTime" => $MIDateTime
+    ];
+// Convert data to JSON format
+$jsonData = json_encode($data);
+//$jsonData = $response; //POST whole API "file"/response --- works
+// Initialize cURL session
+$ch = curl_init($webhookUrl);
+// Set cURL options
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'Content-Length: ' . strlen($jsonData)
+]);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+
+// Execute cURL request
+$response = curl_exec($ch);
+// Check for errors
+if (curl_errno($ch)) {
+    echo 'Error:' . curl_error($ch);
+} else {
+    echo 'Response:' . $response;
+}
+// Close cURL session
+curl_close($ch);
+?>
