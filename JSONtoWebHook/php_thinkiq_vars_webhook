@@ -1,6 +1,6 @@
 <?php
 // Define the webhook URL
-$webhookUrl = "https://webhook.site/2b7b710a-aa99-4cef-9b5a-a33824534c7f";
+$webhookUrl = "https://webhook.site/mywebhok";
 
 // Prepare the data to be sent
 $data = [

@@ -19,7 +19,7 @@ $station->parent->getAttributes();
 //print_r($station);
 
 // URL of the raw JSON file on GitHub until I have the real endpoint
-$jsonString = 'https://raw.githubusercontent.com/slorkowski/JSON_-Files/main/MyExample.json';
+$jsonString = 'https://raw.githubusercontent.com/sssyyy.json';
 $response = file_get_contents($jsonString);
 echo($response);
 //Decode JSON to PHP variable data array
@@ -39,7 +39,7 @@ $station->attributes['statusanalytic']->insertTimeSeries([$TaskStatus], [$MIDate
 //$station->attributes['JSON_Data']->insertTimeSeries([json_encode($rawdata)], ['2025-01-30 11:00']);
 
 // Write to webhook URL
-$webhookUrl = "https://webhook.site/2b7b710a-aa99-4cef-9b5a-a33824534c7f";
+$webhookUrl = "https://webhook.site/mywebhook";
 // Prepare the data to be sent
 $data = [
     "RobotName" => $robotName,
